@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Share — NE/HIE MRI Consensus Score</title>
+<style>
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:#eef2f6;color:#1a2330;display:flex;justify-content:center;padding:28px}
+  .card{background:#fff;max-width:560px;width:100%;border-radius:18px;overflow:hidden;
+    box-shadow:0 10px 40px rgba(16,32,48,.14)}
+  .top{background:linear-gradient(135deg,#0e8377,#0a5b50);color:#fff;padding:26px 28px}
+  .top img{width:60px;height:60px;border-radius:14px;float:right;margin-left:14px}
+  .top h1{margin:0 0 4px;font-size:1.3rem}
+  .top p{margin:0;opacity:.92;font-size:.9rem;max-width:400px}
+  .body{padding:24px 28px;display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+  .qr{text-align:center;flex:0 0 auto}
+  .qr img{width:190px;height:190px;border:1px solid #dbe3ec;border-radius:12px}
+  .qr span{display:block;font-size:.75rem;color:#5b6b7c;margin-top:6px}
+  .info{flex:1;min-width:210px}
+  .info h2{margin:0 0 6px;font-size:.95rem;color:#0b6b5e}
+  .link{display:inline-block;font-size:1rem;font-weight:700;color:#134e8f;word-break:break-all;
+    background:#f0f8f6;border:1px solid #cfe6e1;border-radius:10px;padding:9px 12px;margin:2px 0 12px}
+  .info ul{margin:0;padding-left:18px;font-size:.86rem;color:#3a4756;line-height:1.6}
+  .foot{padding:14px 28px;border-top:1px solid #eef2f6;font-size:.72rem;color:#5b6b7c}
+  @media print{body{background:#fff;padding:0}.card{box-shadow:none;border:1px solid #dbe3ec}}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="top">
+      <img src="./icon-192.png" alt="app icon">
+      <h1>NE/HIE Brain MRI — Consensus Score</h1>
+      <p>Bedside calculator for the Canadian consensus MRI scoring system (Table 2, Mohammad et al., <i>Pediatric Neurology</i> 2025).</p>
+    </div>
+    <div class="body">
+      <div class="qr">
+        <img src="share-qr.png" alt="QR code to open the calculator">
+        <span>Scan to open on your phone</span>
+      </div>
+      <div class="info">
+        <h2>Open it here</h2>
+        <a class="link" href="https://nncceducation-cpu.github.io/MRISCOREHIE/">nncceducation-cpu.github.io/MRISCOREHIE/</a>
+        <ul>
+          <li>Live scoring of all 17 items → subscores + total /32</li>
+          <li>Predominant pattern, copy-to-chart report, print</li>
+          <li>Figure atlas of injury patterns (Figs 1–10)</li>
+          <li>Add to Home Screen — works offline</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot">Decision-support aid reproducing a published table; does not replace radiologist interpretation. Score pending validation for inter-rater reliability and outcome prediction.</div>
+  </div>
+</body>
+</html>
