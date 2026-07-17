@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NE/HIE MRI Score + Outcome Prediction</title>
+<meta name="description" content="Bedside NE/HIE brain MRI consensus score (Table 2) with long-term outcome prediction at 18–24 months, based on Thayyil, Mohammad et al., Pediatric Neurology 2026.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest-predict.webmanifest">
+<meta name="theme-color" content="#0e8377">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HIE Predictor">
+<style>
+:root{
+  --bg:#0f1720; --panel:#ffffff; --ink:#1a2330; --muted:#5b6b7c;
+  --line:#dbe3ec; --brand:#0b6b5e; --brand2:#0e8377; --accent:#134e8f;
+  --amber:#b26a00; --red:#b11f2a; --chip:#eef4f3; --shadow:0 1px 3px rgba(16,32,48,.08),0 6px 18px rgba(16,32,48,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);background:#eef2f6;line-height:1.45;-webkit-text-size-adjust:100%}
+header.app{background:linear-gradient(135deg,#0b6b5e,#0e8377);color:#fff;padding:16px 18px 14px}
+header.app h1{margin:0;font-size:1.15rem;letter-spacing:.2px}
+header.app p{margin:4px 0 0;font-size:.78rem;opacity:.92;max-width:900px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 14px 120px}
+.tabs{display:flex;gap:6px;background:#0a5b50;padding:8px 14px 0;position:sticky;top:0;z-index:40;overflow-x:auto}
+.tab{appearance:none;border:0;background:transparent;color:#cfeee8;font-weight:600;font-size:.9rem;
+  padding:9px 14px;border-radius:9px 9px 0 0;cursor:pointer;white-space:nowrap}
+.tab.active{background:#eef2f6;color:var(--brand)}
+section.view{display:none;padding-top:14px}
+section.view.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+  margin:14px 0;overflow:hidden}
+.card > h2{margin:0;padding:12px 16px;font-size:.98rem;background:var(--chip);border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;gap:10px}
+.card > h2 .sub{font-weight:600;color:var(--brand);font-variant-numeric:tabular-nums;
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:.82rem;white-space:nowrap}
+.item{padding:12px 16px;border-bottom:1px solid #eef2f6}
+.item:last-child{border-bottom:0}
+.item .lab{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.item .name{font-weight:600;font-size:.92rem}
+.item .seq{font-size:.72rem;color:var(--muted);white-space:nowrap;background:#f3f6f9;border:1px solid var(--line);
+  border-radius:6px;padding:1px 7px;font-variant:small-caps;letter-spacing:.3px}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:9px}
+.opts.two{grid-template-columns:repeat(2,1fr);max-width:520px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt label{display:block;cursor:pointer;border:1.5px solid var(--line);border-radius:10px;padding:8px 9px;
+  min-height:100%;background:#fff;transition:.12s}
+.opt .pts{display:inline-block;font-weight:800;font-size:.74rem;color:#fff;background:#9fb0c0;
+  border-radius:5px;padding:0 6px;margin-bottom:4px}
+.opt .txt{display:block;font-size:.82rem;color:var(--ink)}
+.opt:hover label{border-color:#bcd0cb}
+.opt input:checked + label{border-color:var(--brand);background:#f0f8f6;box-shadow:0 0 0 1.5px var(--brand) inset}
+.opt input:checked + label .pts{background:var(--brand)}
+.opt input:focus-visible + label{outline:2px solid var(--accent);outline-offset:2px}
+.pattern{padding:6px 16px 14px}
+.prow{display:flex;flex-wrap:wrap;gap:8px}
+.pchip input{position:absolute;opacity:0}
+.pchip label{display:block;cursor:pointer;border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;
+  font-size:.86rem;font-weight:600;background:#fff}
+.pchip input:checked + label{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pnote{font-size:.78rem;color:var(--muted);margin:10px 0 2px}
+.mods{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px}
+.mods label{font-size:.84rem;display:flex;align-items:center;gap:6px;cursor:pointer}
+.totbar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid var(--line);
+  box-shadow:0 -4px 16px rgba(16,32,48,.08)}
+.totbar .inner{max-width:1000px;margin:0 auto;padding:9px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.subs{display:flex;gap:8px;flex:1;flex-wrap:wrap;min-width:150px}
+.pill{font-size:.72rem;color:var(--muted);background:#f3f6f9;border:1px solid var(--line);border-radius:8px;
+  padding:3px 9px;font-variant-numeric:tabular-nums}
+.pill b{color:var(--ink);font-size:.82rem}
+.grand{display:flex;align-items:center;gap:8px}
+.grand .n{font-size:1.5rem;font-weight:800;color:var(--brand);font-variant-numeric:tabular-nums;line-height:1}
+.grand .d{font-size:.72rem;color:var(--muted)}
+.btns{display:flex;gap:8px}
+.btn{appearance:none;border:1.5px solid var(--brand);background:var(--brand);color:#fff;font-weight:700;
+  font-size:.84rem;padding:9px 13px;border-radius:10px;cursor:pointer}
+.btn.sec{background:#fff;color:var(--brand)}
+.btn.ghost{background:#fff;color:var(--red);border-color:#e6c9cc}
+.notes{font-size:.8rem;color:var(--muted);padding:6px 2px}
+.notes h3{font-size:.82rem;color:var(--ink);margin:12px 0 4px}
+.abbr{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2px 16px}
+.atlas{display:grid;grid-template-columns:1fr;gap:14px}
+.fig{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.fig img{width:100%;display:block;background:#000;cursor:zoom-in}
+.fig .cap{padding:10px 14px}
+.fig .cap h4{margin:0 0 3px;font-size:.9rem;color:var(--brand)}
+.fig .cap p{margin:0;font-size:.82rem;color:var(--muted)}
+.tag{display:inline-block;font-size:.68rem;font-weight:700;color:#fff;background:var(--accent);border-radius:5px;padding:1px 7px;margin-right:6px;vertical-align:1px}
+.lb{position:fixed;inset:0;background:rgba(6,12,18,.92);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.lb.open{display:flex}
+.lb img{max-width:100%;max-height:88vh;border-radius:8px}
+.lb .x{position:absolute;top:14px;right:18px;color:#fff;font-size:2rem;cursor:pointer;line-height:1}
+.lb .cx{position:absolute;bottom:16px;left:0;right:0;text-align:center;color:#cfeee8;font-size:.85rem;padding:0 20px}
+.disclaim{font-size:.72rem;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:14px 0}
+/* prognosis */
+.pgscore{display:flex;gap:12px;flex-wrap:wrap;margin:2px 0 12px}
+.pgscore .b{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 16px;flex:1;min-width:140px;text-align:center;box-shadow:var(--shadow)}
+.pgscore .b .v{font-size:1.9rem;font-weight:800;color:var(--brand);font-variant-numeric:tabular-nums;line-height:1}
+.pgscore .b .l{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+.banner{border-radius:12px;padding:12px 15px;margin:6px 0 14px;font-weight:600;font-size:.9rem;border:1px solid}
+.banner.low{background:#eaf6f1;border-color:#bfe3d5;color:#0b6b5e}
+.banner.high{background:#fcecec;border-color:#f0c4c7;color:#b11f2a}
+.banner.mid{background:#fff6e8;border-color:#f0dcbb;color:#8a5a00}
+.ocard{border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+.ocard h3{margin:0;padding:11px 14px;font-size:.92rem;display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--chip);border-bottom:1px solid var(--line)}
+.badge{font-size:.72rem;font-weight:800;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.badge.pos{background:#fcecec;color:#b11f2a}
+.badge.neg{background:#eaf6f1;color:#0b6b5e}
+.ocard .obody{padding:11px 14px;font-size:.85rem}
+.ocard .pv{font-size:.86rem;margin:2px 0 6px}
+.ocard .pv b{font-size:1.05rem}
+.metrics{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.metric{font-size:.72rem;background:#f3f6f9;border:1px solid var(--line);border-radius:7px;padding:3px 8px;font-variant-numeric:tabular-nums}
+.metric b{color:var(--ink)}
+.pgcaveat{font-size:.76rem;color:#7a3b00;background:#fff8ef;border:1px solid #f0dcbb;border-radius:10px;padding:11px 14px;margin:12px 0;line-height:1.5}
+@media (max-width:640px){
+  .opts{grid-template-columns:1fr}
+  .opts.two{grid-template-columns:1fr}
+  .grand .n{font-size:1.3rem}
+  header.app h1{font-size:1.02rem}
+}
+@media print{
+  body{background:#fff}
+  .totbar{position:static;box-shadow:none;border-top:2px solid #000}
+  .opt input:not(:checked) + label{display:none}
+  .opt input:checked + label{border-color:#000}
+  .tabs{display:none}
+  section.view{display:block !important}
+  #view-atlas{display:none !important}
+  .btns{display:none}
+}
+</style>
+</head>
+<body>
+<header class="app">
+  <h1>NE/HIE Brain MRI — Score &amp; Outcome Prediction</h1>
+  <p>Score the day 4–5 MRI (Table 2), then see estimated 18–24-month outcomes based on the Canadian validation cohort (Thayyil, Mohammad et al., Pediatr Neurol 2026).</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab active" data-view="score" role="tab">Score</button>
+  <button class="tab" data-view="prognosis" role="tab">Prognosis</button>
+  <button class="tab" data-view="atlas" role="tab">Figure atlas</button>
+</div>
+
+<div class="wrap">
+  <section id="view-score" class="view active">
+
+    <div class="card" id="card-gm">
+      <h2>Gray matter <span class="sub">Subscore <b id="sub-gm">0</b> / 12</span></h2>
+      <div class="items" data-group="gm"></div>
+    </div>
+
+    <div class="card" id="card-wm">
+      <h2>White matter / cortex <span class="sub">Subscore <b id="sub-wm">0</b> / 12</span></h2>
+      <div class="items" data-group="wm"></div>
+    </div>
+
+    <div class="card" id="card-cb">
+      <h2>Cerebellum <span class="sub">Subscore <b id="sub-cb">0</b> / 4</span></h2>
+      <div class="items" data-group="cb"></div>
+    </div>
+
+    <div class="card" id="card-ad">
+      <h2>Additional <span class="sub">Subscore <b id="sub-ad">0</b> / 4</span></h2>
+      <div class="items" data-group="ad"></div>
+    </div>
+
+    <div class="card">
+      <h2>Predominant injury pattern <span class="sub">clinical classification</span></h2>
+      <div class="pattern">
+        <div class="prow" id="pattern-row"></div>
+        <p class="pnote">Optional descriptors (can coexist with any pattern):</p>
+        <div class="mods">
+          <label><input type="checkbox" id="mod-brainstem"> Brainstem involvement</label>
+          <label><input type="checkbox" id="mod-cerebellum"> Cerebellar involvement</label>
+          <label><input type="checkbox" id="mod-pais"> PAIS present (separate mechanism)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Notes &amp; references</h2>
+      <div class="notes" style="padding:12px 16px">
+        <h3 style="margin-top:0">Sequences used to assess injury</h3>
+        <div class="abbr">
+          <div>DR = Diffusion restriction</div>
+          <div>DWI = Diffusion-weighted imaging</div>
+          <div>MRV = Magnetic resonance venography</div>
+          <div>PLIC = Posterior limb of the internal capsule</div>
+          <div>PWML = Punctate white matter lesions</div>
+          <div>SI = Signal intensity</div>
+          <div>SWI = Susceptibility-weighted imaging</div>
+        </div>
+        <h3>Scoring notes</h3>
+        <p>Each item scores <b>0</b> (absent), <b>1</b>, or <b>2</b> points as defined in Table 2. Maximum total = <b>32</b> (Gray matter 12 + White matter/cortex 12 + Cerebellum 4 + Additional 4). Intraventricular and subdural hemorrhage cap at 1 point.</p>
+        <p style="margin-top:8px"><b>Sources:</b> Mohammad K, et al. Consensus Approach for Standardization of the Timing of Brain MRI and Classification of Brain Injury in NE/HIE: A Canadian Perspective. <i>Pediatric Neurology</i> 2025;166:16-31 (Table 2). Prognostic estimates: Thayyil B, Scott JN, ... Mohammad K. Consensus Classification of Brain Injury Predicts Long-Term Neurodevelopmental Outcomes in Neonates With HIE. <i>Pediatric Neurology</i> 2026 (in press).</p>
+      </div>
+    </div>
+
+    <div class="disclaim">Clinical decision-support aid that reproduces a published scoring table. It does not replace radiologist interpretation or clinical judgement.</div>
+  </section>
+
+  <section id="view-prognosis" class="view">
+    <div class="pgscore">
+      <div class="b"><div class="v" id="pg-gm">0</div><div class="l">Grey matter&nbsp;/&nbsp;12</div></div>
+      <div class="b"><div class="v" id="pg-total">0</div><div class="l">Total MRI&nbsp;/&nbsp;32</div></div>
+    </div>
+    <div class="banner low" id="pg-banner">Enter the MRI score on the <b>Score</b> tab — the estimated outcomes update here automatically.</div>
+    <div id="pg-cards"></div>
+    <p class="pnote" id="pg-summary" style="font-size:.85rem;color:var(--ink)"></p>
+    <div class="pgcaveat" id="pg-caveat"></div>
+    <div class="notes" style="padding:6px 2px">Estimates from Thayyil B, Scott JN, Embaireeg A, Benlamri A, Fiedrich E, Zein H, Leijser LM, Gurram S, Tang S, Mohammad K. <i>Consensus Classification of Brain Injury Predicts Long-Term Neurodevelopmental Outcomes in Neonates With Hypoxic-Ischemic Encephalopathy.</i> Pediatric Neurology 2026; doi:10.1016/j.pediatrneurol.2026.07.008.</div>
+  </section>
+
+  <section id="view-atlas" class="view">
+    <div class="disclaim" style="border-style:solid">Reference atlas — representative MRI patterns reproduced from Figures 1-10 of the consensus article to help apply Table 2 at the bedside. Tap any image to enlarge.</div>
+    <div class="atlas" id="atlas"></div>
+    <div class="notes" style="padding:10px 4px">Figures © the authors / <i>Pediatric Neurology</i> 2025;166:16-31 (Mohammad et al.). Reproduced here for clinical reference within the study team.</div>
+  </section>
+</div>
+
+<div class="totbar">
+  <div class="inner">
+    <div class="subs">
+      <span class="pill">GM <b id="p-gm">0</b>/12</span>
+      <span class="pill">WM <b id="p-wm">0</b>/12</span>
+      <span class="pill">CB <b id="p-cb">0</b>/4</span>
+      <span class="pill">Add <b id="p-ad">0</b>/4</span>
+    </div>
+    <div class="grand"><span class="n" id="grand">0</span><span class="d">/ 32<br>total</span></div>
+    <div class="btns">
+      <button class="btn ghost" id="newcaseBtn">＋ New case</button>
+      <button class="btn sec" id="copyBtn">Copy report</button>
+      <button class="btn" id="printBtn">Print</button>
+    </div>
+  </div>
+</div>
+
+<div class="lb" id="lb"><span class="x" id="lbx">&times;</span><img id="lbimg" alt=""><div class="cx" id="lbcap"></div></div>
+<script>
+var GROUPS = {
+  gm:{name:"Gray matter", max:12},
+  wm:{name:"White matter / cortex", max:12},
+  cb:{name:"Cerebellum", max:4},
+  ad:{name:"Additional", max:4}
+};
+var ITEMS = [
+  {g:"gm",id:"gm1",name:"Thalamus — abnormal SI or DR",seq:"T1/T2, DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Focal (<50%) · Unilateral"},{p:2,t:"Extensive (≥50%) · Bilateral"}]},
+  {g:"gm",id:"gm2",name:"Basal ganglia — abnormal SI or DR",seq:"T1/T2, DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Focal (<50%) · Unilateral"},{p:2,t:"Extensive (≥50%) · Bilateral"}]},
+  {g:"gm",id:"gm3",name:"PLIC — myelination or DR",seq:"T1/T2, DWI",
+    o:[{p:0,t:"Normal, or no DR"},{p:1,t:"Equivocal/partial myelinated, or partial (<50%) DR · Unilateral"},{p:2,t:"Absent myelination, or extensive (>50%) DR · Bilateral"}]},
+  {g:"gm",id:"gm4",name:"Brainstem (peduncles) — abnormal SI or DR",seq:"T1/T2, DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Focal (<50%) · Unilateral"},{p:2,t:"Extensive (≥50%) · Bilateral"}]},
+  {g:"gm",id:"gm5",name:"Perirolandic cortex — DR",seq:"DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Mild · Unilateral"},{p:2,t:"Clear · Bilateral"}]},
+  {g:"gm",id:"gm6",name:"Hippocampus — DR",seq:"DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Yes · Unilateral"},{p:2,t:"Bilateral"}]},
+  {g:"wm",id:"wm1",name:"Cortex abnormal (not perirolandic cortex)",seq:"T1/T2, DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Focal (1 lobe) · Unilateral"},{p:2,t:"Extensive (>1 lobe) · Bilateral"}]},
+  {g:"wm",id:"wm2",name:"White matter — increased SI or DR (not PWML)",seq:"T1/T2, DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Focal (1 lobe) · Unilateral"},{p:2,t:"Extensive (>1 lobe) · Bilateral"}]},
+  {g:"wm",id:"wm3",name:"PWML (punctate white matter lesions)",seq:"T1/T2, DWI, SWI",
+    o:[{p:0,t:"None"},{p:1,t:"<6 · Unilateral"},{p:2,t:"≥6 · Bilateral"}]},
+  {g:"wm",id:"wm4",name:"Hemorrhage (not PWML)",seq:"T1/T2, SWI",
+    o:[{p:0,t:"None"},{p:1,t:"Single hemorrhage <1.5 cm · Unilateral"},{p:2,t:"≥1.5 cm or multiple hemorrhages · Bilateral"}]},
+  {g:"wm",id:"wm5",name:"Optic radiation — DR",seq:"DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Mild · Unilateral"},{p:2,t:"Clear · Bilateral"}]},
+  {g:"wm",id:"wm6",name:"Corpus callosum — DR",seq:"DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Yes · Unilateral"},{p:2,t:"Bilateral"}]},
+  {g:"cb",id:"cb1",name:"Cerebellum — abnormal SI or DR",seq:"T1/T2, DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Focal (<0.5 cm) · Unilateral"},{p:2,t:"Extensive (>0.5 cm, or multiple lesions) · Bilateral"}]},
+  {g:"cb",id:"cb2",name:"Cerebellar hemorrhage",seq:"T1/T2, DWI",
+    o:[{p:0,t:"None"},{p:1,t:"Single hemorrhage <0.5 cm · Unilateral"},{p:2,t:"≥0.5 cm or multiple hemorrhages · Bilateral"}]},
+  {g:"ad",id:"ad1",name:"Intraventricular hemorrhage",seq:"T1/T2, SWI",
+    o:[{p:0,t:"No"},{p:1,t:"Yes"}]},
+  {g:"ad",id:"ad2",name:"Subdural hemorrhage",seq:"T1/T2, SWI",
+    o:[{p:0,t:"No / thin, without mass effect"},{p:1,t:"Yes (mass effect present)"}]},
+  {g:"ad",id:"ad3",name:"Occlusive cerebral sinovenous thrombosis",seq:"T1/T2, MRV",
+    o:[{p:0,t:"No"},{p:1,t:"Yes (dural venous sinuses)"},{p:2,t:"Yes (deep venous thrombosis)"}]}
+];
+var PATTERNS = [
+  {v:"none",t:"None / normal"},
+  {v:"bgt",t:"BGT-predominant"},
+  {v:"watershed",t:"Watershed-predominant"},
+  {v:"pwmi",t:"PWMI (punctate WM)"},
+  {v:"global",t:"Global / near-total"}
+];
+var FIGS = [
+  {n:1,tag:"Pattern",title:"Central basal ganglia–thalamus (BGT) injury pattern",cap:"Injury centred on the deep gray nuclei (± PLIC, perirolandic cortex, brainstem)."},
+  {n:2,tag:"Pattern",title:"Watershed injury pattern",cap:"White-matter / cortex injury in the vascular watershed zones, ± BGT."},
+  {n:3,tag:"Pattern",title:"Punctate white matter lesion (PWML) pattern",cap:"Punctate WM lesions without BGT or watershed WM involvement."},
+  {n:4,tag:"Pattern",title:"Global (near-total) injury pattern",cap:"Devastating injury involving both BGT and white matter; cerebellum often spared."},
+  {n:5,tag:"Region",title:"Brainstem injury",cap:"Focal (<50%) or extensive (>50%) restricted diffusion of the midbrain / peduncles."},
+  {n:6,tag:"Region",title:"Cerebellar injury",cap:"Cerebellar infarct or hemorrhage; frequently associated with BGT injury."},
+  {n:7,tag:"Region",title:"Perinatal arterial ischemic stroke (PAIS)",cap:"Wedge-shaped restricted diffusion in an arterial territory — a distinct mechanism."},
+  {n:8,tag:"Region",title:"Miscellaneous ischemic injuries",cap:"Focal intraparenchymal hemorrhage and cerebral sinovenous thrombosis (CSVT)."},
+  {n:9,tag:"Hemorrhage",title:"Intracranial hemorrhage",cap:"Intraventricular and intraparenchymal hemorrhage with SWI/T2* correlation."},
+  {n:10,tag:"Hemorrhage",title:"Extracranial & intracranial extra-axial hemorrhage",cap:"Subdural / subgaleal hemorrhage — subdural scored only when mass effect is present."}
+];
+/* Prediction model — Thayyil, Mohammad et al., Pediatr Neurol 2026 (GM cutoff >=3, excl 1H-MRS) */
+var PROG = [
+  {key:"ds", name:"Death or severe NDI", denom:"n=69", prev:37.7,
+    sens:80.8, spec:93.0, ppv:87.5, npv:88.9, acc:88.4, auc:0.88,
+    pos:"Grey-matter score ≥3 — above the validated threshold. In the cohort, ~88% of infants above this cut-off had death or severe NDI (PPV).",
+    neg:"Grey-matter score <3 — below the threshold. Most such infants did not have death or severe NDI (NPV ~89%)."},
+  {key:"sndi", name:"Severe NDI (survivors)", denom:"n=60", prev:28.3,
+    sens:70.6, spec:93.0, ppv:80.0, npv:88.9, acc:88.3, auc:0.83,
+    pos:"Grey-matter score ≥3 — elevated risk of severe NDI among survivors (PPV ~80%).",
+    neg:"Grey-matter score <3 — lower risk of severe NDI (NPV ~89%)."},
+  {key:"cp", name:"Cerebral palsy (any severity)", denom:"n=136", prev:7.4,
+    sens:90.0, spec:89.7, ppv:40.9, npv:99.1, acc:89.7, auc:0.92,
+    pos:"Grey-matter score ≥3 — increased CP risk, but PPV is modest (~41%): many will not develop CP. Total MRI score is the strongest CP discriminator (AUC 0.93).",
+    neg:"Near-normal deep grey matter (score <3) — cerebral palsy is very unlikely (NPV 99.1%)."}
+];
+var GM_CUT = 3;
+
+function buildItems(){
+  document.querySelectorAll('.items').forEach(function(box){
+    var g=box.dataset.group;
+    ITEMS.filter(function(i){return i.g===g;}).forEach(function(it){
+      var wrap=document.createElement('div'); wrap.className='item';
+      var two = it.o.length===2 ? ' two' : '';
+      wrap.innerHTML =
+        '<div class="lab"><span class="name">'+it.name+'</span><span class="seq">'+it.seq+'</span></div>'+
+        '<div class="opts'+two+'">'+
+          it.o.map(function(o){return (
+            '<div class="opt"><input type="radio" name="'+it.id+'" id="'+it.id+'_'+o.p+'" value="'+o.p+'"'+
+            (o.p===0?' checked':'')+'>'+
+            '<label for="'+it.id+'_'+o.p+'"><span class="pts">'+o.p+' pt</span>'+
+            '<span class="txt">'+o.t+'</span></label></div>'
+          );}).join('')+
+        '</div>';
+      box.appendChild(wrap);
+    });
+  });
+}
+function buildPatterns(){
+  var row=document.getElementById('pattern-row');
+  PATTERNS.forEach(function(p,i){
+    var el=document.createElement('div'); el.className='pchip';
+    el.innerHTML='<input type="radio" name="pattern" id="pat_'+p.v+'" value="'+p.v+'"'+(i===0?' checked':'')+'>'+
+      '<label for="pat_'+p.v+'">'+p.t+'</label>';
+    row.appendChild(el);
+  });
+}
+function buildAtlas(){
+  var a=document.getElementById('atlas');
+  FIGS.forEach(function(f){
+    var el=document.createElement('div'); el.className='fig';
+    var nn=('0'+f.n).slice(-2);
+    el.innerHTML='<img loading="lazy" src="fig'+nn+'.jpg" '+
+      'alt="Figure '+f.n+': '+f.title+'" data-cap="Fig '+f.n+' — '+f.title+'">'+
+      '<div class="cap"><h4><span class="tag">'+f.tag+'</span>Figure '+f.n+'. '+f.title+'</h4><p>'+f.cap+'</p></div>';
+    a.appendChild(el);
+  });
+}
+
+function val(id){var el=document.querySelector('input[name="'+id+'"]:checked');return el?+el.value:0;}
+function recalc(){
+  var sub={gm:0,wm:0,cb:0,ad:0};
+  ITEMS.forEach(function(it){sub[it.g]+=val(it.id);});
+  var total=sub.gm+sub.wm+sub.cb+sub.ad;
+  for(var g in sub){
+    document.getElementById('sub-'+g).textContent=sub[g];
+    document.getElementById('p-'+g).textContent=sub[g];
+  }
+  document.getElementById('grand').textContent=total;
+  updatePrognosis(sub.gm,total);
+  return {sub:sub,total:total};
+}
+
+function updatePrognosis(gm,total){
+  document.getElementById('pg-gm').textContent=gm;
+  document.getElementById('pg-total').textContent=total;
+  var banner=document.getElementById('pg-banner');
+  var above=gm>=GM_CUT;
+  if(gm===0){
+    banner.className='banner low';
+    banner.innerHTML='Near-normal deep grey matter (GM 0). Reassuring — strong negative prediction (e.g., 99.1% negative predictive value for cerebral palsy).';
+  } else if(above){
+    banner.className='banner high';
+    banner.innerHTML='Grey-matter score '+gm+' (≥'+GM_CUT+' threshold). Elevated risk across outcomes — see estimates below.';
+  } else {
+    banner.className='banner mid';
+    banner.innerHTML='Grey-matter score '+gm+' (below the ≥'+GM_CUT+' threshold). Indeterminate / lower risk — interpret with the full clinical picture.';
+  }
+  var box=document.getElementById('pg-cards'); box.innerHTML='';
+  PROG.forEach(function(o){
+    var pv = above ? o.ppv : o.npv;
+    var pvLabel = above ? 'Positive predictive value' : 'Negative predictive value';
+    var card=document.createElement('div'); card.className='ocard';
+    card.innerHTML=
+      '<h3>'+o.name+' <span class="badge '+(above?'pos':'neg')+'">'+(above?'GM ≥'+GM_CUT+' — above':'GM <'+GM_CUT+' — below')+'</span></h3>'+
+      '<div class="obody">'+
+        '<div>'+(above?o.pos:o.neg)+'</div>'+
+        '<div class="pv">'+pvLabel+' at this score: <b>'+pv.toFixed(1)+'%</b></div>'+
+        '<div class="metrics">'+
+          '<span class="metric">Sens <b>'+o.sens.toFixed(1)+'%</b></span>'+
+          '<span class="metric">Spec <b>'+o.spec.toFixed(1)+'%</b></span>'+
+          '<span class="metric">PPV <b>'+o.ppv.toFixed(1)+'%</b></span>'+
+          '<span class="metric">NPV <b>'+o.npv.toFixed(1)+'%</b></span>'+
+          '<span class="metric">Acc <b>'+o.acc.toFixed(1)+'%</b></span>'+
+          '<span class="metric">AUC <b>'+o.auc.toFixed(2)+'</b></span>'+
+          '<span class="metric">cohort rate '+o.prev.toFixed(1)+'% ('+o.denom+')</span>'+
+        '</div>'+
+      '</div>';
+    box.appendChild(card);
+  });
+  var sum=document.getElementById('pg-summary');
+  if(gm===0){
+    sum.innerHTML='<b>Plain-language summary:</b> A near-normal deep grey-matter score is strongly reassuring in this cohort — very low likelihood of cerebral palsy and a low risk of death or severe impairment. Continue routine neurodevelopmental surveillance.';
+  } else if(above){
+    sum.innerHTML='<b>Plain-language summary:</b> This grey-matter score sits above the risk threshold. There is a meaningfully increased likelihood of adverse outcomes; each additional grey-matter point independently raised the odds of death or severe NDI (adjusted OR 1.67, 95% CI 1.23–2.26). Use for counselling alongside serial examination — the score estimates probability, not certainty.';
+  } else {
+    sum.innerHTML='<b>Plain-language summary:</b> A low but non-zero grey-matter score falls below the validated threshold. Risk is lower than for higher scores but not zero; interpret together with the clinical examination, EEG, and the overall pattern of injury.';
+  }
+}
+
+function patternLabel(){var v=document.querySelector('input[name="pattern"]:checked').value;
+  return PATTERNS.filter(function(p){return p.v===v;})[0].t;}
+function buildReport(){
+  var r=recalc(), sub=r.sub, total=r.total;
+  var L=[];
+  L.push("NE/HIE Brain MRI — Consensus Score + Outcome Prediction");
+  L.push("Score: Mohammad et al., Pediatr Neurol 2025 (Table 2). Prediction: Thayyil/Mohammad et al., 2026.");
+  L.push("Date: "+new Date().toLocaleDateString());
+  L.push("");
+  var order=[["gm","GRAY MATTER"],["wm","WHITE MATTER / CORTEX"],["cb","CEREBELLUM"],["ad","ADDITIONAL"]];
+  order.forEach(function(pair){
+    var g=pair[0], title=pair[1];
+    L.push(title+"  (subscore "+sub[g]+"/"+GROUPS[g].max+")");
+    ITEMS.filter(function(i){return i.g===g;}).forEach(function(it){
+      var v=val(it.id); var opt=it.o.filter(function(o){return o.p===v;})[0];
+      L.push("  - "+it.name+": "+v+" pt ("+opt.t+")");
+    });
+    L.push("");
+  });
+  L.push("SUBSCORES  GM "+sub.gm+"/12 · WM "+sub.wm+"/12 · CB "+sub.cb+"/4 · Additional "+sub.ad+"/4");
+  L.push("TOTAL SCORE: "+total+" / 32");
+  L.push("");
+  var mods=[];
+  if(document.getElementById('mod-brainstem').checked)mods.push("brainstem involvement");
+  if(document.getElementById('mod-cerebellum').checked)mods.push("cerebellar involvement");
+  if(document.getElementById('mod-pais').checked)mods.push("PAIS present");
+  L.push("Predominant pattern: "+patternLabel()+(mods.length?"  ["+mods.join(", ")+"]":""));
+  L.push("");
+  L.push("PROGNOSIS at 18–24 months (GM cut-off ≥3; single-centre validation cohort):");
+  var above=sub.gm>=GM_CUT;
+  PROG.forEach(function(o){
+    var pv=above?o.ppv:o.npv; var lbl=above?"PPV":"NPV";
+    L.push("  - "+o.name+": GM "+(above?"≥3 (above)":"<3 (below)")+" — "+lbl+" "+pv.toFixed(1)+"% (sens "+o.sens.toFixed(1)+"%, spec "+o.spec.toFixed(1)+"%, AUC "+o.auc.toFixed(2)+")");
+  });
+  L.push("");
+  L.push("Prognostic aid only — estimates probability, not certainty. Single-centre retrospective external validation; integrate with clinical exam. Not a substitute for specialist assessment.");
+  return L.join("\n");
+}
+
+document.addEventListener('change',function(e){if(e.target.name&&e.target.type==='radio')recalc();});
+document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.view').forEach(function(x){x.classList.remove('active');});
+  t.classList.add('active');
+  document.getElementById('view-'+t.dataset.view).classList.add('active');
+  window.scrollTo(0,0);
+});});
+function flash(id,msg){var b=document.getElementById(id);var o=b.textContent;b.textContent=msg;
+  setTimeout(function(){b.textContent=o;},1400);}
+document.getElementById('copyBtn').addEventListener('click',function(){
+  var txt=buildReport();
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){flash('copyBtn','Copied ✓');}).catch(function(){fallbackCopy(txt);});
+  } else { fallbackCopy(txt); }
+});
+function fallbackCopy(txt){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');flash('copyBtn','Copied ✓');}catch(e){}ta.remove();}
+document.getElementById('printBtn').addEventListener('click',function(){
+  document.querySelector('.tab[data-view="score"]').click();window.print();});
+function resetAll(){
+  ITEMS.forEach(function(it){var z=document.getElementById(it.id+'_0');if(z)z.checked=true;});
+  document.getElementById('pat_none').checked=true;
+  ['mod-brainstem','mod-cerebellum','mod-pais'].forEach(function(id){document.getElementById(id).checked=false;});
+  recalc();
+}
+document.getElementById('newcaseBtn').addEventListener('click',function(){
+  if(recalc().total===0 || window.confirm('Start a new case? This clears all current scores.')){
+    resetAll();
+    document.querySelector('.tab[data-view="score"]').click();
+    window.scrollTo(0,0);
+  }
+});
+document.getElementById('pg-caveat').innerHTML='<b>Important — prognostic aid, not a diagnosis.</b> Estimates come from a single-centre retrospective external validation of the Weeke-adapted Canadian score (Thayyil, Mohammad et al., Pediatr Neurol 2026): 69 infants for death/severe NDI, 60 for severe NDI, 136 for cerebral palsy. Predictive values depend on this cohort’s outcome rates and may differ in your population. Scores here use the 0/1/2-per-item Table 2 scale; confirm the scaling matches your group’s convention. Always integrate with serial neurological examination, EEG, and the full clinical picture, and involve neurology/neonatal neurodevelopment — never base care decisions on the score alone.';
+var lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg'),lbcap=document.getElementById('lbcap');
+document.getElementById('atlas').addEventListener('click',function(e){
+  if(e.target.tagName==='IMG'){lbimg.src=e.target.src;lbcap.textContent=e.target.dataset.cap;lb.classList.add('open');}});
+function closeLb(){lb.classList.remove('open');lbimg.src='';}
+document.getElementById('lbx').addEventListener('click',closeLb);
+lb.addEventListener('click',function(e){if(e.target===lb)closeLb();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLb();});
+
+buildItems();buildPatterns();buildAtlas();recalc();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
+}
+</script>
+</body>
+</html>
