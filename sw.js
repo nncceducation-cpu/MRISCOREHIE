@@ -1,19 +1,20 @@
 /* Service worker — offline cache for the NE/HIE MRI Consensus Score calculator */
-const CACHE = 'hie-mri-score-v1';
+const CACHE = 'hie-mri-score-v3';
 const ASSETS = [
   './',
   './index.html',
+  './predict.html',
   './manifest.webmanifest',
   './favicon.ico',
-  './icon-192.png',
-  './icon-512.png',
-  './apple-touch-icon.png',
-  './maskable-192.png',
-  './maskable-512.png',
-  './fig01.jpg','./fig02.jpg','./fig03.jpg',
-  './fig04.jpg','./fig05.jpg','./fig06.jpg',
-  './fig07.jpg','./fig08.jpg','./fig09.jpg',
-  './fig10.jpg'
+  './assets/icons/icon-192.png',
+  './assets/icons/icon-512.png',
+  './assets/icons/apple-touch-icon.png',
+  './assets/icons/maskable-192.png',
+  './assets/icons/maskable-512.png',
+  './assets/figs/fig01.jpg','./assets/figs/fig02.jpg','./assets/figs/fig03.jpg',
+  './assets/figs/fig04.jpg','./assets/figs/fig05.jpg','./assets/figs/fig06.jpg',
+  './assets/figs/fig07.jpg','./assets/figs/fig08.jpg','./assets/figs/fig09.jpg',
+  './assets/figs/fig10.jpg'
 ];
 
 self.addEventListener('install', e => {
@@ -29,11 +30,10 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
-      const copy = res.clone();
-      caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
-      return res;
-    }).catch(() => caches.match('./index.html')))
-  );
-});
+  const isDoc = e.request.mode === 'navigate' || e.request.destination === 'document';
+  if (isDoc) {
+    // Network-first for pages so updates show immediately
+    e.respondWith(
+      fetch(e.request).then(res => {
+        const copy = res.clone();
+        c
