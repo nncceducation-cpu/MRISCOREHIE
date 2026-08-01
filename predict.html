@@ -28,7 +28,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 header.app{background:linear-gradient(135deg,#0b6b5e,#0e8377);color:#fff;padding:16px 18px 14px}
 header.app h1{margin:0;font-size:1.15rem;letter-spacing:.2px}
 header.app p{margin:4px 0 0;font-size:.78rem;opacity:.92;max-width:900px}
-.wrap{max-width:1000px;margin:0 auto;padding:0 14px 120px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 14px 128px}
 .tabs{display:flex;gap:6px;background:#0a5b50;padding:8px 14px 0;position:sticky;top:0;z-index:40;overflow-x:auto}
 .tab{appearance:none;border:0;background:transparent;color:#cfeee8;font-weight:600;font-size:.9rem;
   padding:9px 14px;border-radius:9px 9px 0 0;cursor:pointer;white-space:nowrap}
@@ -43,11 +43,20 @@ section.view.active{display:block}
   background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:.82rem;white-space:nowrap}
 .item{padding:12px 16px;border-bottom:1px solid #eef2f6}
 .item:last-child{border-bottom:0}
+.item.needs{background:#fffaf2}
 .item .lab{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
-.item .name{font-weight:600;font-size:.92rem}
+.item .name{font-weight:600;font-size:.92rem;flex:1;min-width:180px}
 .item .seq{font-size:.72rem;color:var(--muted);white-space:nowrap;background:#f3f6f9;border:1px solid var(--line);
   border-radius:6px;padding:1px 7px;font-variant:small-caps;letter-spacing:.3px}
-.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:9px}
+.item .itemtot{font-size:.72rem;font-weight:800;color:var(--brand);background:#f0f8f6;border:1px solid #cfe6e1;
+  border-radius:999px;padding:1px 9px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.axis{margin-top:10px}
+.axis .ah{font-size:.68rem;font-weight:800;color:var(--muted);letter-spacing:.7px;text-transform:uppercase;margin-bottom:5px}
+.axis.off{opacity:.4}
+.axis.off .opt label{cursor:not-allowed}
+.warn{display:none;margin-top:7px;font-size:.75rem;font-weight:700;color:var(--amber)}
+.item.needs .warn{display:block}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .opts.two{grid-template-columns:repeat(2,1fr);max-width:520px}
 .opt{position:relative}
 .opt input{position:absolute;opacity:0;pointer-events:none}
@@ -73,6 +82,9 @@ section.view.active{display:block}
 .demo label{display:flex;flex-direction:column;font-size:.74rem;color:var(--muted);font-weight:600;gap:4px}
 .demo input{font-size:.9rem;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;color:var(--ink);font-family:inherit;background:#fff}
 .demo input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.howto{padding:12px 16px;font-size:.83rem}
+.howto b{color:var(--brand)}
+.howto .eg{margin-top:8px;background:#f7fbfa;border:1px solid #d9ebe7;border-radius:10px;padding:9px 12px;font-size:.8rem}
 .totbar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid var(--line);
   box-shadow:0 -4px 16px rgba(16,32,48,.08)}
 .totbar .inner{max-width:1000px;margin:0 auto;padding:9px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -80,6 +92,7 @@ section.view.active{display:block}
 .pill{font-size:.72rem;color:var(--muted);background:#f3f6f9;border:1px solid var(--line);border-radius:8px;
   padding:3px 9px;font-variant-numeric:tabular-nums}
 .pill b{color:var(--ink);font-size:.82rem}
+.pill.alert{background:#fff5e6;border-color:#f0d3a3;color:var(--amber);font-weight:700}
 .grand{display:flex;align-items:center;gap:8px}
 .grand .n{font-size:1.5rem;font-weight:800;color:var(--brand);font-variant-numeric:tabular-nums;line-height:1}
 .grand .d{font-size:.72rem;color:var(--muted)}
@@ -125,6 +138,7 @@ section.view.active{display:block}
 .metric{font-size:.72rem;background:#f3f6f9;border:1px solid var(--line);border-radius:7px;padding:3px 8px;font-variant-numeric:tabular-nums}
 .metric b{color:var(--ink)}
 .pgcaveat{font-size:.76rem;color:#7a3b00;background:#fff8ef;border:1px solid #f0dcbb;border-radius:10px;padding:11px 14px;margin:12px 0;line-height:1.5}
+.pgincomplete{display:none;font-size:.8rem;font-weight:700;color:#7a3b00;background:#fff5e6;border:1px solid #f0d3a3;border-radius:10px;padding:10px 14px;margin:0 0 12px}
 @media (max-width:640px){
   .opts{grid-template-columns:1fr}
   .opts.two{grid-template-columns:1fr}
@@ -136,6 +150,7 @@ section.view.active{display:block}
   .totbar{position:static;box-shadow:none;border-top:2px solid #000}
   .opt input:not(:checked) + label{display:none}
   .opt input:checked + label{border-color:#000}
+  .axis.off{display:none}
   .tabs{display:none}
   section.view{display:block !important}
   #view-atlas{display:none !important}
@@ -146,7 +161,7 @@ section.view.active{display:block}
 <body>
 <header class="app">
   <h1>NE/HIE Brain MRI — Score &amp; Outcome Prediction</h1>
-  <p>Score the day 4–5 MRI (Table 2), then see estimated 18–24-month outcomes based on the Canadian validation cohort (Thayyil, Mohammad et al., Pediatr Neurol 2026).</p>
+  <p>Score the day 4–5 MRI (Table 2), then see estimated 18–24-month outcomes based on the Canadian validation cohort (Thayyil, Mohammad et al., Pediatr Neurol 2026). For each item, <b>extent/severity</b> and <b>laterality</b> are scored on two separate lines and added, as printed in Table 2.</p>
   <a href="index.html" style="display:inline-block;margin-top:10px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.55);color:#fff;text-decoration:none;font-size:.78rem;font-weight:700;padding:5px 13px;border-radius:999px">↩ Score-only tool</a>
 </header>
 
@@ -168,24 +183,37 @@ section.view.active{display:block}
       </div>
     </div>
 
+    <div class="card">
+      <h2>How each item is scored <span class="sub">two lines per item</span></h2>
+      <div class="howto">
+        In Table 2 each anatomical item occupies <b>two lines</b> under the 1-point and 2-point columns: the first line grades
+        <b>extent/severity</b> (focal = 1, extensive = 2) and the second grades <b>laterality</b> (unilateral = 1, bilateral = 2).
+        The item score is the <b>sum of both lines</b>, so a single region can contribute 0–4 points. Laterality is scored only
+        when the item is abnormal.
+        <div class="eg"><b>Worked example —</b> a thalamic lesion that is <i>focal but bilateral</i> scores
+          <b>1</b> (focal) <b>+ 2</b> (bilateral) <b>= 3</b> points; <i>extensive but unilateral</i> scores <b>2 + 1 = 3</b>;
+          <i>extensive and bilateral</i> scores <b>2 + 2 = 4</b>. The grey-matter cut-off used on the Prognosis tab
+          (GM ≥ 3) refers to this same 0–23 grey-matter scale.</div>
+      </div>
+    </div>
 
     <div class="card" id="card-gm">
-      <h2>Gray matter <span class="sub">Subscore <b id="sub-gm">0</b> / 12</span></h2>
+      <h2>Gray matter <span class="sub">Subscore <b id="sub-gm">0</b> / <span id="max-gm">–</span></span></h2>
       <div class="items" data-group="gm"></div>
     </div>
 
     <div class="card" id="card-wm">
-      <h2>White matter / cortex <span class="sub">Subscore <b id="sub-wm">0</b> / 12</span></h2>
+      <h2>White matter / cortex <span class="sub">Subscore <b id="sub-wm">0</b> / <span id="max-wm">–</span></span></h2>
       <div class="items" data-group="wm"></div>
     </div>
 
     <div class="card" id="card-cb">
-      <h2>Cerebellum <span class="sub">Subscore <b id="sub-cb">0</b> / 4</span></h2>
+      <h2>Cerebellum <span class="sub">Subscore <b id="sub-cb">0</b> / <span id="max-cb">–</span></span></h2>
       <div class="items" data-group="cb"></div>
     </div>
 
     <div class="card" id="card-ad">
-      <h2>Additional <span class="sub">Subscore <b id="sub-ad">0</b> / 4</span></h2>
+      <h2>Additional <span class="sub">Subscore <b id="sub-ad">0</b> / <span id="max-ad">–</span></span></h2>
       <div class="items" data-group="ad"></div>
     </div>
 
@@ -216,7 +244,15 @@ section.view.active{display:block}
           <div>SWI = Susceptibility-weighted imaging</div>
         </div>
         <h3>Scoring notes</h3>
-        <p>Each item scores <b>0</b> (absent), <b>1</b>, or <b>2</b> points as defined in Table 2. Maximum total = <b>32</b> (Gray matter 12 + White matter/cortex 12 + Cerebellum 4 + Additional 4). Intraventricular and subdural hemorrhage cap at 1 point.</p>
+        <p>Each item is scored on <b>two independent axes</b> — extent/severity (0–2) and laterality (0–2) — which are added.
+          Focal-but-bilateral (1 + 2 = 3) and extensive-but-unilateral (2 + 1 = 3) are both scorable, and both differ from
+          focal-and-unilateral (1 + 1 = 2).</p>
+        <p style="margin-top:8px">Items scored on extent only (no laterality axis): <b>corpus callosum</b> (midline),
+          <b>intraventricular hemorrhage</b>, <b>subdural hemorrhage</b> and <b>cerebral sinovenous thrombosis</b>.
+          Intraventricular and subdural hemorrhage cap at 1 point; subdural is scored only when mass effect is present.</p>
+        <p style="margin-top:8px">Maximum total = <b><span id="maxtotal-note">–</span></b>
+          (Gray matter <span id="maxn-gm">–</span> + White matter/cortex <span id="maxn-wm">–</span>
+          + Cerebellum <span id="maxn-cb">–</span> + Additional <span id="maxn-ad">–</span>).</p>
         <p style="margin-top:8px"><b>Sources:</b> Mohammad K, et al. Consensus Approach for Standardization of the Timing of Brain MRI and Classification of Brain Injury in NE/HIE: A Canadian Perspective. <i>Pediatric Neurology</i> 2025;166:16-31 (Table 2). Prognostic estimates: Thayyil B, Scott JN, ... Mohammad K. Consensus Classification of Brain Injury Predicts Long-Term Neurodevelopmental Outcomes in Neonates With HIE. <i>Pediatric Neurology</i> 2026 (in press).</p>
       </div>
     </div>
@@ -226,9 +262,10 @@ section.view.active{display:block}
 
   <section id="view-prognosis" class="view">
     <div class="pgscore">
-      <div class="b"><div class="v" id="pg-gm">0</div><div class="l">Grey matter&nbsp;/&nbsp;12</div></div>
-      <div class="b"><div class="v" id="pg-total">0</div><div class="l">Total MRI&nbsp;/&nbsp;32</div></div>
+      <div class="b"><div class="v" id="pg-gm">0</div><div class="l">Grey matter&nbsp;/&nbsp;<span id="pg-gmmax">–</span></div></div>
+      <div class="b"><div class="v" id="pg-total">0</div><div class="l">Total MRI&nbsp;/&nbsp;<span id="pg-totmax">–</span></div></div>
     </div>
+    <div class="pgincomplete" id="pg-incomplete">⚠ One or more abnormal items still have no laterality selected — the grey-matter score below is incomplete and the risk estimate may be understated.</div>
     <div class="banner low" id="pg-banner">Enter the MRI score on the <b>Score</b> tab — the estimated outcomes update here automatically.</div>
     <div id="pg-cards"></div>
     <p class="pnote" id="pg-summary" style="font-size:.85rem;color:var(--ink)"></p>
@@ -246,12 +283,13 @@ section.view.active{display:block}
 <div class="totbar">
   <div class="inner">
     <div class="subs">
-      <span class="pill">GM <b id="p-gm">0</b>/12</span>
-      <span class="pill">WM <b id="p-wm">0</b>/12</span>
-      <span class="pill">CB <b id="p-cb">0</b>/4</span>
-      <span class="pill">Add <b id="p-ad">0</b>/4</span>
+      <span class="pill">GM <b id="p-gm">0</b>/<span id="pmax-gm">–</span></span>
+      <span class="pill">WM <b id="p-wm">0</b>/<span id="pmax-wm">–</span></span>
+      <span class="pill">CB <b id="p-cb">0</b>/<span id="pmax-cb">–</span></span>
+      <span class="pill">Add <b id="p-ad">0</b>/<span id="pmax-ad">–</span></span>
+      <span class="pill alert" id="needpill" style="display:none">⚠ <b id="needn">0</b> item(s) need laterality</span>
     </div>
-    <div class="grand"><span class="n" id="grand">0</span><span class="d">/ 32<br>total</span></div>
+    <div class="grand"><span class="n" id="grand">0</span><span class="d">/ <span id="maxtotal">–</span><br>total</span></div>
     <div class="btns">
       <button class="btn ghost" id="newcaseBtn">＋ New case</button>
       <button class="btn sec" id="copyBtn">Copy report</button>
@@ -263,48 +301,74 @@ section.view.active{display:block}
 
 <div class="lb" id="lb"><span class="x" id="lbx">&times;</span><img id="lbimg" alt=""><div class="cx" id="lbcap"></div></div>
 <script>
+/* ---------------------------------------------------------------------------
+   NE/HIE Brain MRI Consensus Score — Table 2 (Mohammad et al., Pediatr Neurol
+   2025;166:16-31) + outcome prediction (Thayyil, Mohammad et al., 2026).
+
+   In the published table each anatomical item spans TWO lines under the
+   "1 Point" and "2 Points" columns:
+        line 1 = extent / severity   (focal = 1,      extensive = 2)
+        line 2 = laterality          (unilateral = 1, bilateral = 2)
+   The item score is the SUM of the two lines (0-4 per item), giving subscore
+   maxima of GM 23 / WM 21 / CB 8 / Additional 4 and a total of 56.
+
+   The GM >= 3 prognostic cut-off is defined on this 0-23 grey-matter scale.
+   Earlier versions of this page collapsed the two lines into a single 0/1/2
+   choice (GM max 12, total 32), which systematically UNDER-scored grey matter
+   and could therefore place infants below the cut-off in error.
+--------------------------------------------------------------------------- */
+
 var GROUPS = {
-  gm:{name:"Gray matter", max:12},
-  wm:{name:"White matter / cortex", max:12},
-  cb:{name:"Cerebellum", max:4},
-  ad:{name:"Additional", max:4}
+  gm:{name:"Gray matter"},
+  wm:{name:"White matter / cortex"},
+  cb:{name:"Cerebellum"},
+  ad:{name:"Additional"}
 };
+
+/* lat:true  -> item carries a separate laterality axis (0/1/2)
+   lat:false -> midline or non-lateralised item, extent only               */
 var ITEMS = [
-  {g:"gm",id:"gm1",name:"Thalamus — abnormal SI or DR",seq:"T1/T2, DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Focal (<50%) · Unilateral"},{p:2,t:"Extensive (≥50%) · Bilateral"}]},
-  {g:"gm",id:"gm2",name:"Basal ganglia — abnormal SI or DR",seq:"T1/T2, DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Focal (<50%) · Unilateral"},{p:2,t:"Extensive (≥50%) · Bilateral"}]},
-  {g:"gm",id:"gm3",name:"PLIC — myelination or DR",seq:"T1/T2, DWI",
-    o:[{p:0,t:"Normal, or no DR"},{p:1,t:"Equivocal/partial myelinated, or partial (<50%) DR · Unilateral"},{p:2,t:"Absent myelination, or extensive (>50%) DR · Bilateral"}]},
-  {g:"gm",id:"gm4",name:"Brainstem (peduncles) — abnormal SI or DR",seq:"T1/T2, DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Focal (<50%) · Unilateral"},{p:2,t:"Extensive (≥50%) · Bilateral"}]},
-  {g:"gm",id:"gm5",name:"Perirolandic cortex — DR",seq:"DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Mild · Unilateral"},{p:2,t:"Clear · Bilateral"}]},
-  {g:"gm",id:"gm6",name:"Hippocampus — DR",seq:"DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Yes · Unilateral"},{p:2,t:"Bilateral"}]},
-  {g:"wm",id:"wm1",name:"Cortex abnormal (not perirolandic cortex)",seq:"T1/T2, DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Focal (1 lobe) · Unilateral"},{p:2,t:"Extensive (>1 lobe) · Bilateral"}]},
-  {g:"wm",id:"wm2",name:"White matter — increased SI or DR (not PWML)",seq:"T1/T2, DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Focal (1 lobe) · Unilateral"},{p:2,t:"Extensive (>1 lobe) · Bilateral"}]},
-  {g:"wm",id:"wm3",name:"PWML (punctate white matter lesions)",seq:"T1/T2, DWI, SWI",
-    o:[{p:0,t:"None"},{p:1,t:"<6 · Unilateral"},{p:2,t:"≥6 · Bilateral"}]},
-  {g:"wm",id:"wm4",name:"Hemorrhage (not PWML)",seq:"T1/T2, SWI",
-    o:[{p:0,t:"None"},{p:1,t:"Single hemorrhage <1.5 cm · Unilateral"},{p:2,t:"≥1.5 cm or multiple hemorrhages · Bilateral"}]},
-  {g:"wm",id:"wm5",name:"Optic radiation — DR",seq:"DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Mild · Unilateral"},{p:2,t:"Clear · Bilateral"}]},
-  {g:"wm",id:"wm6",name:"Corpus callosum — DR",seq:"DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Yes · Unilateral"},{p:2,t:"Bilateral"}]},
-  {g:"cb",id:"cb1",name:"Cerebellum — abnormal SI or DR",seq:"T1/T2, DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Focal (<0.5 cm) · Unilateral"},{p:2,t:"Extensive (>0.5 cm, or multiple lesions) · Bilateral"}]},
-  {g:"cb",id:"cb2",name:"Cerebellar hemorrhage",seq:"T1/T2, DWI",
-    o:[{p:0,t:"None"},{p:1,t:"Single hemorrhage <0.5 cm · Unilateral"},{p:2,t:"≥0.5 cm or multiple hemorrhages · Bilateral"}]},
-  {g:"ad",id:"ad1",name:"Intraventricular hemorrhage",seq:"T1/T2, SWI",
-    o:[{p:0,t:"No"},{p:1,t:"Yes"}]},
-  {g:"ad",id:"ad2",name:"Subdural hemorrhage",seq:"T1/T2, SWI",
-    o:[{p:0,t:"No / thin, without mass effect"},{p:1,t:"Yes (mass effect present)"}]},
-  {g:"ad",id:"ad3",name:"Occlusive cerebral sinovenous thrombosis",seq:"T1/T2, MRV",
-    o:[{p:0,t:"No"},{p:1,t:"Yes (dural venous sinuses)"},{p:2,t:"Yes (deep venous thrombosis)"}]}
+  {g:"gm",id:"gm1",name:"Thalamus — abnormal SI or DR",seq:"T1/T2, DWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Focal (<50%)"},{p:2,t:"Extensive (≥50%)"}]},
+  {g:"gm",id:"gm2",name:"Basal ganglia — abnormal SI or DR",seq:"T1/T2, DWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Focal (<50%)"},{p:2,t:"Extensive (≥50%)"}]},
+  {g:"gm",id:"gm3",name:"PLIC — myelination or DR",seq:"T1/T2, DWI",lat:true,
+    ext:[{p:0,t:"Normal, or no DR"},{p:1,t:"Equivocal / partially myelinated, or partial (<50%) DR"},{p:2,t:"Absent myelination, or extensive (>50%) DR"}]},
+  {g:"gm",id:"gm4",name:"Brainstem (peduncles) — abnormal SI or DR",seq:"T1/T2, DWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Focal (<50%)"},{p:2,t:"Extensive (≥50%)"}]},
+  {g:"gm",id:"gm5",name:"Perirolandic cortex — DR",seq:"DWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Mild"},{p:2,t:"Clear"}]},
+  {g:"gm",id:"gm6",name:"Hippocampus — DR",seq:"DWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Yes"}]},
+
+  {g:"wm",id:"wm1",name:"Cortex abnormal (not perirolandic cortex)",seq:"T1/T2, DWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Focal (1 lobe)"},{p:2,t:"Extensive (>1 lobe)"}]},
+  {g:"wm",id:"wm2",name:"White matter — increased SI or DR (not PWML)",seq:"T1/T2, DWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Focal (1 lobe)"},{p:2,t:"Extensive (>1 lobe)"}]},
+  {g:"wm",id:"wm3",name:"PWML (punctate white matter lesions)",seq:"T1/T2, DWI, SWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"<6 lesions"},{p:2,t:"≥6 lesions"}]},
+  {g:"wm",id:"wm4",name:"Hemorrhage (not PWML)",seq:"T1/T2, SWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Single hemorrhage <1.5 cm"},{p:2,t:"≥1.5 cm, or multiple hemorrhages"}]},
+  {g:"wm",id:"wm5",name:"Optic radiation — DR",seq:"DWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Mild"},{p:2,t:"Clear"}]},
+  {g:"wm",id:"wm6",name:"Corpus callosum — DR",seq:"DWI",lat:false,
+    ext:[{p:0,t:"None"},{p:1,t:"Yes"}]},
+
+  {g:"cb",id:"cb1",name:"Cerebellum — abnormal SI or DR",seq:"T1/T2, DWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Focal (<0.5 cm)"},{p:2,t:"Extensive (>0.5 cm, or multiple lesions)"}]},
+  {g:"cb",id:"cb2",name:"Cerebellar hemorrhage",seq:"T1/T2, DWI",lat:true,
+    ext:[{p:0,t:"None"},{p:1,t:"Single hemorrhage <0.5 cm"},{p:2,t:"≥0.5 cm, or multiple hemorrhages"}]},
+
+  {g:"ad",id:"ad1",name:"Intraventricular hemorrhage",seq:"T1/T2, SWI",lat:false,
+    ext:[{p:0,t:"No"},{p:1,t:"Yes"}]},
+  {g:"ad",id:"ad2",name:"Subdural hemorrhage",seq:"T1/T2, SWI",lat:false,
+    ext:[{p:0,t:"No / thin, without mass effect"},{p:1,t:"Yes (mass effect present)"}]},
+  {g:"ad",id:"ad3",name:"Occlusive cerebral sinovenous thrombosis",seq:"T1/T2, MRV",lat:false,
+    ext:[{p:0,t:"No"},{p:1,t:"Yes (dural venous sinuses)"},{p:2,t:"Yes (deep venous thrombosis)"}]}
 ];
+
+var LAT = [{p:0,t:"Not applicable"},{p:1,t:"Unilateral"},{p:2,t:"Bilateral"}];
+
 var PATTERNS = [
   {v:"none",t:"None / normal"},
   {v:"bgt",t:"BGT-predominant"},
@@ -324,7 +388,8 @@ var FIGS = [
   {n:9,tag:"Hemorrhage",title:"Intracranial hemorrhage",cap:"Intraventricular and intraparenchymal hemorrhage with SWI/T2* correlation."},
   {n:10,tag:"Hemorrhage",title:"Extracranial & intracranial extra-axial hemorrhage",cap:"Subdural / subgaleal hemorrhage — subdural scored only when mass effect is present."}
 ];
-/* Prediction model — Thayyil, Mohammad et al., Pediatr Neurol 2026 (GM cutoff >=3, excl 1H-MRS) */
+/* Prediction model — Thayyil, Mohammad et al., Pediatr Neurol 2026
+   (grey-matter cut-off >=3 on the 0-23 scale, excl 1H-MRS) */
 var PROG = [
   {key:"ds", name:"Death or severe NDI", denom:"n=69", prev:37.7,
     sens:80.8, spec:93.0, ppv:87.5, npv:88.9, acc:88.4, auc:0.88,
@@ -341,25 +406,50 @@ var PROG = [
 ];
 var GM_CUT = 3;
 
+/* ---------- maxima, derived from the item definitions ---------- */
+function itemMax(it){ return it.ext[it.ext.length-1].p + (it.lat?2:0); }
+(function(){
+  for(var g in GROUPS){GROUPS[g].max=0;}
+  ITEMS.forEach(function(it){GROUPS[it.g].max += itemMax(it);});
+})();
+function totalMax(){var m=0;for(var g in GROUPS)m+=GROUPS[g].max;return m;}
+
+/* ---------- build ---------- */
+function axisHtml(name,opts,title,isLat){
+  var cls='opts'+(opts.length===2?' two':'');
+  return '<div class="axis'+(isLat?' lat off':'')+'" data-axis="'+name+'">'+
+    '<div class="ah">'+title+'</div><div class="'+cls+'">'+
+    opts.map(function(o){return (
+      '<div class="opt"><input type="radio" name="'+name+'" id="'+name+'_'+o.p+'" value="'+o.p+'"'+
+      (o.p===0?' checked':'')+(isLat?' disabled':'')+'>'+
+      '<label for="'+name+'_'+o.p+'"><span class="pts">'+o.p+' pt</span>'+
+      '<span class="txt">'+o.t+'</span></label></div>');
+    }).join('')+'</div></div>';
+}
 function buildItems(){
   document.querySelectorAll('.items').forEach(function(box){
     var g=box.dataset.group;
     ITEMS.filter(function(i){return i.g===g;}).forEach(function(it){
-      var wrap=document.createElement('div'); wrap.className='item';
-      var two = it.o.length===2 ? ' two' : '';
+      var wrap=document.createElement('div'); wrap.className='item'; wrap.id='item-'+it.id;
       wrap.innerHTML =
-        '<div class="lab"><span class="name">'+it.name+'</span><span class="seq">'+it.seq+'</span></div>'+
-        '<div class="opts'+two+'">'+
-          it.o.map(function(o){return (
-            '<div class="opt"><input type="radio" name="'+it.id+'" id="'+it.id+'_'+o.p+'" value="'+o.p+'"'+
-            (o.p===0?' checked':'')+'>'+
-            '<label for="'+it.id+'_'+o.p+'"><span class="pts">'+o.p+' pt</span>'+
-            '<span class="txt">'+o.t+'</span></label></div>'
-          );}).join('')+
-        '</div>';
+        '<div class="lab"><span class="name">'+it.name+'</span>'+
+          '<span class="seq">'+it.seq+'</span>'+
+          '<span class="itemtot">item <b id="it-'+it.id+'">0</b>/'+itemMax(it)+'</span></div>'+
+        axisHtml(it.id+'_e', it.ext, it.lat?'1 · Extent / severity':'Score') +
+        (it.lat ? axisHtml(it.id+'_l', LAT, '2 · Laterality', true) : '') +
+        (it.lat ? '<div class="warn">⚠ Abnormal — select unilateral or bilateral to complete this item.</div>' : '');
       box.appendChild(wrap);
     });
   });
+  for(var g in GROUPS){
+    ['max-','pmax-','maxn-'].forEach(function(pre){
+      var el=document.getElementById(pre+g); if(el)el.textContent=GROUPS[g].max;
+    });
+  }
+  document.getElementById('maxtotal').textContent=totalMax();
+  document.getElementById('maxtotal-note').textContent=totalMax();
+  document.getElementById('pg-gmmax').textContent=GROUPS.gm.max;
+  document.getElementById('pg-totmax').textContent=totalMax();
 }
 function buildPatterns(){
   var row=document.getElementById('pattern-row');
@@ -382,10 +472,40 @@ function buildAtlas(){
   });
 }
 
-function val(id){var el=document.querySelector('input[name="'+id+'"]:checked');return el?+el.value:0;}
+/* ---------- scoring ---------- */
+function val(name){var el=document.querySelector('input[name="'+name+'"]:checked');return el?+el.value:0;}
+function ext(it){return val(it.id+'_e');}
+function lat(it){return it.lat?val(it.id+'_l'):0;}
+function itemScore(it){return ext(it)+lat(it);}
+
+function syncLat(){
+  var pending=0;
+  ITEMS.forEach(function(it){
+    if(!it.lat) return;
+    var on = ext(it) > 0;
+    var ax = document.querySelector('.axis[data-axis="'+it.id+'_l"]');
+    var row = document.getElementById('item-'+it.id);
+    ax.classList.toggle('off', !on);
+    Array.prototype.forEach.call(document.getElementsByName(it.id+'_l'), function(r){ r.disabled = !on; });
+    if(!on){ var z=document.getElementById(it.id+'_l_0'); if(z) z.checked=true; }
+    var needs = on && val(it.id+'_l')===0;
+    row.classList.toggle('needs', needs);
+    if(needs) pending++;
+  });
+  var pill=document.getElementById('needpill');
+  document.getElementById('needn').textContent=pending;
+  pill.style.display = pending ? '' : 'none';
+  document.getElementById('pg-incomplete').style.display = pending ? 'block' : 'none';
+  return pending;
+}
 function recalc(){
+  var pending=syncLat();
   var sub={gm:0,wm:0,cb:0,ad:0};
-  ITEMS.forEach(function(it){sub[it.g]+=val(it.id);});
+  ITEMS.forEach(function(it){
+    var s=itemScore(it);
+    sub[it.g]+=s;
+    var el=document.getElementById('it-'+it.id); if(el) el.textContent=s;
+  });
   var total=sub.gm+sub.wm+sub.cb+sub.ad;
   for(var g in sub){
     document.getElementById('sub-'+g).textContent=sub[g];
@@ -393,7 +513,7 @@ function recalc(){
   }
   document.getElementById('grand').textContent=total;
   updatePrognosis(sub.gm,total);
-  return {sub:sub,total:total};
+  return {sub:sub,total:total,pending:pending};
 }
 
 function updatePrognosis(gm,total){
@@ -406,10 +526,10 @@ function updatePrognosis(gm,total){
     banner.innerHTML='Near-normal deep grey matter (GM 0). Reassuring — strong negative prediction (e.g., 99.1% negative predictive value for cerebral palsy).';
   } else if(above){
     banner.className='banner high';
-    banner.innerHTML='Grey-matter score '+gm+' (≥'+GM_CUT+' threshold). Elevated risk across outcomes — see estimates below.';
+    banner.innerHTML='Grey-matter score '+gm+' of '+GROUPS.gm.max+' (≥'+GM_CUT+' threshold). Elevated risk across outcomes — see estimates below.';
   } else {
     banner.className='banner mid';
-    banner.innerHTML='Grey-matter score '+gm+' (below the ≥'+GM_CUT+' threshold). Indeterminate / lower risk — interpret with the full clinical picture.';
+    banner.innerHTML='Grey-matter score '+gm+' of '+GROUPS.gm.max+' (below the ≥'+GM_CUT+' threshold). Indeterminate / lower risk — interpret with the full clinical picture.';
   }
   var box=document.getElementById('pg-cards'); box.innerHTML='';
   PROG.forEach(function(o){
@@ -443,6 +563,8 @@ function updatePrognosis(gm,total){
   }
 }
 
+/* ---------- report ---------- */
+function optText(opts,p){var o=opts.filter(function(x){return x.p===p;})[0];return o?o.t:'—';}
 function patternLabel(){var v=document.querySelector('input[name="pattern"]:checked').value;
   return PATTERNS.filter(function(p){return p.v===v;})[0].t;}
 function buildReport(){
@@ -453,18 +575,24 @@ function buildReport(){
   L.push("Date: "+(document.getElementById('d-date').value||new Date().toLocaleDateString())+"   Case ID: "+(document.getElementById('d-id').value||"—"));
   L.push("GA: "+(document.getElementById('d-ga').value||"—")+" wks   MRI day of life: "+(document.getElementById('d-dol').value||"—"));
   L.push("");
+  L.push("Each item = extent/severity score + laterality score.");
+  L.push("");
   var order=[["gm","GRAY MATTER"],["wm","WHITE MATTER / CORTEX"],["cb","CEREBELLUM"],["ad","ADDITIONAL"]];
   order.forEach(function(pair){
     var g=pair[0], title=pair[1];
     L.push(title+"  (subscore "+sub[g]+"/"+GROUPS[g].max+")");
     ITEMS.filter(function(i){return i.g===g;}).forEach(function(it){
-      var v=val(it.id); var opt=it.o.filter(function(o){return o.p===v;})[0];
-      L.push("  - "+it.name+": "+v+" pt ("+opt.t+")");
+      var e=ext(it), l=lat(it), s=e+l;
+      var line="  - "+it.name+": "+s+"/"+itemMax(it)+" pt  [extent "+e+" = "+optText(it.ext,e);
+      line += it.lat ? ("; laterality "+l+" = "+optText(LAT,l)+"]") : "]";
+      L.push(line);
     });
     L.push("");
   });
-  L.push("SUBSCORES  GM "+sub.gm+"/12 · WM "+sub.wm+"/12 · CB "+sub.cb+"/4 · Additional "+sub.ad+"/4");
-  L.push("TOTAL SCORE: "+total+" / 32");
+  L.push("SUBSCORES  GM "+sub.gm+"/"+GROUPS.gm.max+" · WM "+sub.wm+"/"+GROUPS.wm.max+
+         " · CB "+sub.cb+"/"+GROUPS.cb.max+" · Additional "+sub.ad+"/"+GROUPS.ad.max);
+  L.push("TOTAL SCORE: "+total+" / "+totalMax());
+  if(r.pending) L.push("** "+r.pending+" abnormal item(s) still have no laterality selected — score incomplete. **");
   L.push("");
   var mods=[];
   if(document.getElementById('mod-brainstem').checked)mods.push("brainstem involvement");
@@ -472,7 +600,7 @@ function buildReport(){
   if(document.getElementById('mod-pais').checked)mods.push("PAIS present");
   L.push("Predominant pattern: "+patternLabel()+(mods.length?"  ["+mods.join(", ")+"]":""));
   L.push("");
-  L.push("PROGNOSIS at 18–24 months (GM cut-off ≥3; single-centre validation cohort):");
+  L.push("PROGNOSIS at 18–24 months (grey-matter cut-off ≥3 on the 0–"+GROUPS.gm.max+" scale; single-centre validation cohort):");
   var above=sub.gm>=GM_CUT;
   PROG.forEach(function(o){
     var pv=above?o.ppv:o.npv; var lbl=above?"PPV":"NPV";
@@ -483,6 +611,7 @@ function buildReport(){
   return L.join("\n");
 }
 
+/* ---------- wiring ---------- */
 document.addEventListener('change',function(e){if(e.target.name&&e.target.type==='radio')recalc();});
 document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){
   document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
@@ -504,7 +633,10 @@ function fallbackCopy(txt){var ta=document.createElement('textarea');ta.value=tx
 document.getElementById('printBtn').addEventListener('click',function(){
   document.querySelector('.tab[data-view="score"]').click();window.print();});
 function resetAll(){
-  ITEMS.forEach(function(it){var z=document.getElementById(it.id+'_0');if(z)z.checked=true;});
+  ITEMS.forEach(function(it){
+    var e=document.getElementById(it.id+'_e_0'); if(e)e.checked=true;
+    if(it.lat){var l=document.getElementById(it.id+'_l_0'); if(l)l.checked=true;}
+  });
   document.getElementById('pat_none').checked=true;
   ['mod-brainstem','mod-cerebellum','mod-pais'].forEach(function(id){document.getElementById(id).checked=false;});
   ['d-id','d-ga','d-dol'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
@@ -518,7 +650,7 @@ document.getElementById('newcaseBtn').addEventListener('click',function(){
     window.scrollTo(0,0);
   }
 });
-document.getElementById('pg-caveat').innerHTML='<b>Important — prognostic aid, not a diagnosis.</b> Estimates come from a single-centre retrospective external validation of the Weeke-adapted Canadian score (Thayyil, Mohammad et al., Pediatr Neurol 2026): 69 infants for death/severe NDI, 60 for severe NDI, 136 for cerebral palsy. Predictive values depend on this cohort’s outcome rates and may differ in your population. Scores here use the 0/1/2-per-item Table 2 scale; confirm the scaling matches your group’s convention. Always integrate with serial neurological examination, EEG, and the full clinical picture, and involve neurology/neonatal neurodevelopment — never base care decisions on the score alone.';
+document.getElementById('pg-caveat').innerHTML='<b>Important — prognostic aid, not a diagnosis.</b> Estimates come from a single-centre retrospective external validation of the Weeke-adapted Canadian score (Thayyil, Mohammad et al., Pediatr Neurol 2026): 69 infants for death/severe NDI, 60 for severe NDI, 136 for cerebral palsy. Predictive values depend on this cohort’s outcome rates and may differ in your population. The grey-matter cut-off of ≥3 is defined on the Table 2 scale used here, in which extent and laterality are scored separately (grey matter 0–23, total 0–56) — do not apply it to a collapsed 0/1/2-per-item score, which under-scores grey matter. Always integrate with serial neurological examination, EEG, and the full clinical picture, and involve neurology/neonatal neurodevelopment — never base care decisions on the score alone.';
 var lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg'),lbcap=document.getElementById('lbcap');
 document.getElementById('atlas').addEventListener('click',function(e){
   if(e.target.tagName==='IMG'){lbimg.src=e.target.src;lbcap.textContent=e.target.dataset.cap;lb.classList.add('open');}});
@@ -530,11 +662,15 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLb();})
 function csvEsc(v){v=(v==null?'':String(v));return '"'+v.replace(/"/g,'""')+'"';}
 function exportCSV(){
   var r=recalc(), sub=r.sub, total=r.total;
-  var head=['Date','CaseID','GA_weeks','MRI_DOL','GM','WM','Cerebellum','Additional','Total'];
+  var head=['Date','CaseID','GA_weeks','MRI_DOL','GM','WM','Cerebellum','Additional','Total','Total_max','Incomplete_laterality'];
   var row=[document.getElementById('d-date').value, document.getElementById('d-id').value,
     document.getElementById('d-ga').value, document.getElementById('d-dol').value,
-    sub.gm, sub.wm, sub.cb, sub.ad, total];
-  ITEMS.forEach(function(it){head.push(it.id);row.push(val(it.id));});
+    sub.gm, sub.wm, sub.cb, sub.ad, total, totalMax(), r.pending];
+  ITEMS.forEach(function(it){
+    head.push(it.id+'_ext'); row.push(ext(it));
+    if(it.lat){head.push(it.id+'_lat'); row.push(lat(it));}
+    head.push(it.id+'_total'); row.push(itemScore(it));
+  });
   head.push('Pattern'); row.push(patternLabel());
   var mods=[];
   if(document.getElementById('mod-brainstem').checked)mods.push('brainstem');
