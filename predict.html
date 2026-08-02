@@ -139,6 +139,19 @@ section.view.active{display:block}
 .metric b{color:var(--ink)}
 .pgcaveat{font-size:.76rem;color:#7a3b00;background:#fff8ef;border:1px solid #f0dcbb;border-radius:10px;padding:11px 14px;margin:12px 0;line-height:1.5}
 .pgincomplete{display:none;font-size:.8rem;font-weight:700;color:#7a3b00;background:#fff5e6;border:1px solid #f0d3a3;border-radius:10px;padding:10px 14px;margin:0 0 12px}
+/* mandatory disclaimer gate */
+.gate{background:#fff;border:2px solid var(--amber);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px 16px;margin:6px 0 14px}
+.gate h2{margin:0 0 4px;font-size:1.02rem;color:#7a3b00}
+.gate .lead{margin:0 0 12px;font-weight:700;font-size:.92rem;color:var(--ink)}
+.gate ol{margin:0;padding-left:20px}
+.gate li{margin-bottom:11px;font-size:.87rem;line-height:1.55}
+.gate li b{color:#7a3b00}
+.gate .close{font-size:.85rem;margin:12px 0 0;color:var(--ink)}
+.gate .ackrow{display:flex;align-items:flex-start;gap:9px;margin:16px 0 12px;padding-top:14px;border-top:1px solid var(--line)}
+.gate .ackrow input{width:19px;height:19px;margin:1px 0 0;flex:none;cursor:pointer;accent-color:var(--brand)}
+.gate .ackrow label{font-size:.9rem;font-weight:700;cursor:pointer}
+.gate .btn[disabled]{opacity:.45;cursor:not-allowed}
+#pg-content[hidden]{display:none}
 @media (max-width:640px){
   .opts{grid-template-columns:1fr}
   .opts.two{grid-template-columns:1fr}
@@ -261,6 +274,34 @@ section.view.active{display:block}
   </section>
 
   <section id="view-prognosis" class="view">
+
+    <div class="gate" id="pg-gate">
+      <h2>Before you use this tab</h2>
+      <p class="lead">This is a risk-stratification aid, not an individual prognosis.</p>
+      <ol>
+        <li><b>The evidence is from a single centre.</b> The predictive values shown here come from one retrospective
+          cohort at a single centre (69 infants for death or severe NDI, 60 for severe NDI, 136 for cerebral palsy).
+          They have not been externally validated in another population. Predictive values depend on the outcome rate
+          of the cohort they were derived from and will differ wherever the underlying risk differs from that cohort.</li>
+        <li><b>The score combines structures with different functions.</b> The grey-matter subscore adds together
+          thalamus, basal ganglia, PLIC, brainstem, perirolandic cortex and hippocampus — regions with distinct
+          functions and distinct outcome implications. Two infants with the same numerical score may have entirely
+          different injury and entirely different expected impairments. The number does not replace a description of
+          which structures are involved.</li>
+        <li><b>What the score is for.</b> Its purpose is to identify a higher-risk population for early referral to
+          early-intervention and neurodevelopmental follow-up programmes. It is not intended to predict an individual
+          child's outcome, and must not be used on its own to guide decisions about redirection or limitation of care.</li>
+      </ol>
+      <p class="close">Interpret alongside serial neurological examination, EEG/aEEG, the injury pattern described by
+        the radiologist, and the full clinical picture.</p>
+      <div class="ackrow">
+        <input type="checkbox" id="pg-ackbox">
+        <label for="pg-ackbox">I have read and understood the above.</label>
+      </div>
+      <button class="btn" id="pg-continue" disabled>Continue to prognosis</button>
+    </div>
+
+    <div id="pg-content" hidden>
     <div class="pgscore">
       <div class="b"><div class="v" id="pg-gm">0</div><div class="l">Grey matter&nbsp;/&nbsp;<span id="pg-gmmax">–</span></div></div>
       <div class="b"><div class="v" id="pg-total">0</div><div class="l">Total MRI&nbsp;/&nbsp;<span id="pg-totmax">–</span></div></div>
@@ -271,6 +312,7 @@ section.view.active{display:block}
     <p class="pnote" id="pg-summary" style="font-size:.85rem;color:var(--ink)"></p>
     <div class="pgcaveat" id="pg-caveat"></div>
     <div class="notes" style="padding:6px 2px">Estimates from Thayyil B, Scott JN, Embaireeg A, Benlamri A, Fiedrich E, Zein H, Leijser LM, Gurram S, Tang S, Mohammad K. <i>Consensus Classification of Brain Injury Predicts Long-Term Neurodevelopmental Outcomes in Neonates With Hypoxic-Ischemic Encephalopathy.</i> Pediatric Neurology 2026; doi:10.1016/j.pediatrneurol.2026.07.008.</div>
+    </div>
   </section>
 
   <section id="view-atlas" class="view">
@@ -600,6 +642,11 @@ function buildReport(){
   if(document.getElementById('mod-pais').checked)mods.push("PAIS present");
   L.push("Predominant pattern: "+patternLabel()+(mods.length?"  ["+mods.join(", ")+"]":""));
   L.push("");
+  if(!PROG_ACK){
+    L.push("PROGNOSIS: not included — the prognosis disclaimer on the Prognosis tab has not been acknowledged.");
+    L.push("");
+    return L.join("\n");
+  }
   L.push("PROGNOSIS at 18–24 months (grey-matter cut-off ≥3 on the 0–"+GROUPS.gm.max+" scale; single-centre validation cohort):");
   var above=sub.gm>=GM_CUT;
   PROG.forEach(function(o){
@@ -607,9 +654,26 @@ function buildReport(){
     L.push("  - "+o.name+": GM "+(above?"≥3 (above)":"<3 (below)")+" — "+lbl+" "+pv.toFixed(1)+"% (sens "+o.sens.toFixed(1)+"%, spec "+o.spec.toFixed(1)+"%, AUC "+o.auc.toFixed(2)+")");
   });
   L.push("");
-  L.push("Prognostic aid only — estimates probability, not certainty. Single-centre retrospective external validation; integrate with clinical exam. Not a substitute for specialist assessment.");
+  L.push("Risk-stratification aid only, not an individual prognosis. Single-centre retrospective cohort, not externally validated. The grey-matter subscore combines structures with different functions, so the same number can represent different injury. Intended to identify a higher-risk population for early-intervention referral — not to guide redirection or limitation of care. Disclaimer acknowledged by the user before these estimates were displayed.");
   return L.join("\n");
 }
+
+/* ---------- mandatory disclaimer gate ----------
+   PROG_ACK is a plain variable, never persisted, so the disclaimer is shown
+   again on every page load / refresh.                                       */
+var PROG_ACK = false;
+(function(){
+  var box=document.getElementById('pg-ackbox');
+  var btn=document.getElementById('pg-continue');
+  box.addEventListener('change',function(){btn.disabled=!box.checked;});
+  btn.addEventListener('click',function(){
+    if(!box.checked) return;
+    PROG_ACK=true;
+    document.getElementById('pg-gate').style.display='none';
+    document.getElementById('pg-content').hidden=false;
+    window.scrollTo(0,0);
+  });
+})();
 
 /* ---------- wiring ---------- */
 document.addEventListener('change',function(e){if(e.target.name&&e.target.type==='radio')recalc();});
@@ -677,8 +741,12 @@ function exportCSV(){
   if(document.getElementById('mod-cerebellum').checked)mods.push('cerebellum');
   if(document.getElementById('mod-pais').checked)mods.push('PAIS');
   head.push('Modifiers'); row.push(mods.join('; '));
+  head.push('Prognosis_disclaimer_acknowledged'); row.push(PROG_ACK?'yes':'no');
   var above=sub.gm>=GM_CUT;
-  PROG.forEach(function(o){head.push(o.key+'_call');row.push(above?'above(GM>=3)':'below(GM<3)');head.push(o.key+'_predval');row.push((above?o.ppv:o.npv).toFixed(1)+'%');});
+  PROG.forEach(function(o){
+    head.push(o.key+'_call'); row.push(PROG_ACK?(above?'above(GM>=3)':'below(GM<3)'):'not shown');
+    head.push(o.key+'_predval'); row.push(PROG_ACK?((above?o.ppv:o.npv).toFixed(1)+'%'):'not shown');
+  });
   var csv=head.map(csvEsc).join(',')+'\r\n'+row.map(csvEsc).join(',')+'\r\n';
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
   var url=URL.createObjectURL(blob);
