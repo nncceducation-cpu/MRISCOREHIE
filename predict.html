@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NE/HIE MRI Score + Outcome Prediction</title>
-<meta name="description" content="Bedside NE/HIE brain MRI consensus score (Table 2) with long-term outcome prediction at 18–24 months, based on Thayyil, Mohammad et al., Pediatric Neurology 2026.">
+<title>Canadian Consensus MRI Scoring for HIE (Modified Weeke) — Outcome Prediction</title>
+<meta name="description" content="Canadian Consensus MRI Scoring for HIE (Modified Weeke) — bedside consensus MRI score (Table 2) with long-term outcome prediction at 18–24 months, based on Thayyil, Mohammad et al., Pediatric Neurology 2026.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
@@ -173,7 +173,7 @@ section.view.active{display:block}
 </head>
 <body>
 <header class="app">
-  <h1>NE/HIE Brain MRI — Score &amp; Outcome Prediction</h1>
+  <h1>Canadian Consensus MRI Scoring for HIE <span style="font-weight:600;opacity:.9">(Modified Weeke)</span> — Outcome Prediction</h1>
   <p>Score the day 4–5 MRI (Table 2), then see estimated 18–24-month outcomes based on the Canadian validation cohort (Thayyil, Mohammad et al., Pediatr Neurol 2026). For each item, <b>extent/severity</b> and <b>laterality</b> are scored on two separate lines and added, as printed in Table 2.</p>
   <a href="index.html" style="display:inline-block;margin-top:10px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.55);color:#fff;text-decoration:none;font-size:.78rem;font-weight:700;padding:5px 13px;border-radius:999px">↩ Score-only tool</a>
 </header>
@@ -612,8 +612,8 @@ function patternLabel(){var v=document.querySelector('input[name="pattern"]:chec
 function buildReport(){
   var r=recalc(), sub=r.sub, total=r.total;
   var L=[];
-  L.push("NE/HIE Brain MRI — Consensus Score + Outcome Prediction");
-  L.push("Score: Mohammad et al., Pediatr Neurol 2025 (Table 2). Prediction: Thayyil/Mohammad et al., 2026.");
+  L.push("Canadian Consensus MRI Scoring for HIE (Modified Weeke) — with outcome prediction");
+  L.push("Score: Mohammad et al., Pediatr Neurol 2025;166:16-31 (Table 2). Prediction: Thayyil/Mohammad et al., 2026.");
   L.push("Date: "+(document.getElementById('d-date').value||new Date().toLocaleDateString())+"   Case ID: "+(document.getElementById('d-id').value||"—"));
   L.push("GA: "+(document.getElementById('d-ga').value||"—")+" wks   MRI day of life: "+(document.getElementById('d-dol').value||"—"));
   L.push("");

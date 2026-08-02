@@ -1,7 +1,7 @@
 {
-  "name": "NE/HIE MRI Score & Outcome Predictor",
+  "name": "Canadian Consensus MRI Scoring for HIE (Modified Weeke) — Outcome Prediction",
   "short_name": "HIE Predictor",
-  "description": "NE/HIE brain MRI consensus score with 18–24-month outcome prediction (Thayyil, Mohammad et al., 2026).",
+  "description": "Canadian Consensus MRI Scoring for HIE (Modified Weeke) with 18–24-month outcome prediction (Thayyil, Mohammad et al., 2026).",
   "start_url": "predict.html",
   "scope": ".",
   "display": "standalone",

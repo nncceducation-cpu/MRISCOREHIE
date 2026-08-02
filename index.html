@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NE/HIE MRI Consensus Score — Calculator (Table 2)</title>
-<meta name="description" content="Bedside calculator for the Canadian consensus MRI scoring system for neonatal encephalopathy / hypoxic-ischemic encephalopathy (Mohammad et al., Pediatric Neurology 2025, Table 2). Extent and laterality are scored separately, as in the published table.">
+<title>Canadian Consensus MRI Scoring for HIE (Modified Weeke)</title>
+<meta name="description" content="Canadian Consensus MRI Scoring for HIE (Modified Weeke) — bedside calculator for the consensus MRI scoring system for neonatal encephalopathy / hypoxic-ischemic encephalopathy (Mohammad et al., Pediatric Neurology 2025, Table 2). Extent and laterality are scored separately, as in the published table.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
@@ -14,7 +14,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="HIE MRI Score">
+<meta name="apple-mobile-web-app-title" content="HIE MRI Score"><!-- home-screen label; kept short by iOS convention -->
 <style>
 :root{
   --bg:#0f1720; --panel:#ffffff; --ink:#1a2330; --muted:#5b6b7c;
@@ -138,7 +138,7 @@ section.view.active{display:block}
 </head>
 <body>
 <header class="app">
-  <h1>NE/HIE Brain MRI — Consensus Score</h1>
+  <h1>Canadian Consensus MRI Scoring for HIE <span style="font-weight:600;opacity:.9">(Modified Weeke)</span></h1>
   <p>Bedside calculator for the Canadian consensus MRI scoring system (Table 2). For each item, <b>extent/severity</b> and <b>laterality</b> are scored on two separate lines and added — exactly as printed in the published table. Subscores and total update live.</p>
   <a href="predict.html" style="display:inline-block;margin-top:10px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.55);color:#fff;text-decoration:none;font-size:.78rem;font-weight:700;padding:5px 13px;border-radius:999px">→ Outcome predictor</a>
 </header>
@@ -466,7 +466,8 @@ function patternLabel(){var v=document.querySelector('input[name="pattern"]:chec
 function buildReport(){
   var r=recalc(), sub=r.sub, total=r.total;
   var L=[];
-  L.push("NE/HIE Brain MRI — Consensus Score (Mohammad et al., Pediatr Neurol 2025, Table 2)");
+  L.push("Canadian Consensus MRI Scoring for HIE (Modified Weeke)");
+  L.push("Mohammad et al., Pediatr Neurol 2025;166:16-31, Table 2");
   L.push("Date: "+(document.getElementById('d-date').value||new Date().toLocaleDateString())+"   Case ID: "+(document.getElementById('d-id').value||"—"));
   L.push("GA: "+(document.getElementById('d-ga').value||"—")+" wks   MRI day of life: "+(document.getElementById('d-dol').value||"—"));
   L.push("");

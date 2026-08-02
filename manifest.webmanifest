@@ -1,7 +1,7 @@
 {
-  "name": "NE/HIE Brain MRI Consensus Score",
+  "name": "Canadian Consensus MRI Scoring for HIE (Modified Weeke)",
   "short_name": "HIE MRI Score",
-  "description": "Bedside calculator for the Canadian consensus MRI scoring system (NE/HIE, Table 2, Mohammad et al., Pediatric Neurology 2025).",
+  "description": "Bedside calculator for the Canadian Consensus MRI Scoring for HIE (Modified Weeke) — Table 2, Mohammad et al., Pediatric Neurology 2025;166:16-31.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

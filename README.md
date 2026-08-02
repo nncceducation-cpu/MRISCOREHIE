@@ -1,4 +1,4 @@
-# MRISCOREHIE — NE/HIE Brain MRI Consensus Score Calculator
+# Canadian Consensus MRI Scoring for HIE (Modified Weeke)
 
 A single-page, offline-capable **bedside calculator** that reproduces **Table 2 (The Consensus Scoring System)** from:
 
